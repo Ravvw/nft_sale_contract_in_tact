@@ -164,12 +164,11 @@ contract NftFixpriceSaleV1 with Deployable {
             mode: SendRemainingBalance,
             body: NFTTransfer{
                 queryId: 0,
-                // FIXME: Change this according to your needs
                 newOwner: self.nft_owner_address,
                 responseDestination: self.nft_owner_address,
                 customPayload: null,
                 forwardAmount: 1,
-                forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
+                forwardPayload: rawSlice("F"),
             }.toCell(),
         });
     }

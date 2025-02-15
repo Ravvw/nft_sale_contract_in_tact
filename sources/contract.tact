@@ -90,9 +90,61 @@ contract NftFixpriceSaleV1 with Deployable {
         require(ctx.value >= self.full_price + ton("1"), "not enough funds");
         require(myBalance() >= self.full_price + ton("1"), "Balance error");
         require(self.is_complete == false, "Sale ended");
+        
         self.active = false;
         self.is_complete = true;
         self.sold_at = now();
+        
+        let royalty: Int = self.full_price / 1000 * self.royalty_percent;
+        let market_fee: Int = self.full_price / 1000 * self.fee_percent;
+
+        // ton transfer to nft previous owner
+        send(SendParameters{
+            to: self.nft_owner_address,
+            value: self.full_price - royalty - market_fee,
+            mode: SendIgnoreErrors,
+            bounce: false
+        });
+
+        // nft transfer to nft new owner
+        send(SendParameters{
+            to: self.nft_address,
+            value: 0,
+            mode: ton("0.1"),
+            body: NFTTransfer{
+                queryId: 0,
+                // FIXME: Change this according to your needs
+                newOwner: sender(),
+                responseDestination: sender(),
+                customPayload: null,
+                forwardAmount: 1,
+                forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
+            }.toCell(),
+        });
+
+        // send royalty
+        send(SendParameters{
+            to: self.nft_owner_address,
+            value: royalty,
+            mode: SendIgnoreErrors,
+            bounce: false
+        });
+
+        // send market_fee
+        send(SendParameters{
+            to: self.nft_owner_address,
+            value: market_fee,
+            mode: SendIgnoreErrors,
+            bounce: false
+        });
+
+        // excess
+        send(SendParameters{
+            to: sender(), 
+            value: 0, 
+            mode: SendRemainingValue, 
+            bounce: false
+        });
     }
 
     // change price
@@ -114,11 +166,12 @@ contract NftFixpriceSaleV1 with Deployable {
             mode: SendRemainingBalance,
             body: NFTTransfer{
                 queryId: 0,
+                // FIXME: Change this according to your needs
                 newOwner: self.nft_owner_address,
                 responseDestination: self.nft_owner_address,
                 customPayload: null,
                 forwardAmount: 1,
-                forwardPayload: rawSlice("F"), 
+                forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
             }.toCell(),
         });
     }

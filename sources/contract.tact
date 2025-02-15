@@ -108,8 +108,8 @@ contract NftFixpriceSaleV1 with Deployable {
         // nft transfer to nft new owner
         send(SendParameters{
             to: self.nft_address,
-            value: 0,
-            mode: ton("0.1"),
+            value: ton("0.1"),
+            mode: SendIgnoreErrors,
             body: NFTTransfer{
                 queryId: 0,
                 newOwner: sender(),

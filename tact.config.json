@@ -1,6 +1,6 @@
 {
     "projects": [{
-        "name": "sample",
+        "name": "example",
         "path": "./sources/contract.tact",
         "output": "./sources/output",
         "mode": "full",

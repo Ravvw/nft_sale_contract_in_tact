@@ -1,6 +1,6 @@
 # NFT sale contract in tact
 
-This template comes pre-configured to kickstart your new Tact project. It includes the Tact compiler, TypeScript, Jest integrated with [Sandbox](https://github.com/ton-org/sandbox), and a sample demonstrating how to run tests.
+Example of NFT fixprice sale contract created on TACT
 
 IMPORTANT: This version of the contract is a draft and has not been tested.
 

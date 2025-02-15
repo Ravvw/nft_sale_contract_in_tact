@@ -1,4 +1,3 @@
-import "@stdlib/ownable";
 import "@stdlib/deploy";
 
 struct SaleData {
@@ -113,12 +112,11 @@ contract NftFixpriceSaleV1 with Deployable {
             mode: ton("0.1"),
             body: NFTTransfer{
                 queryId: 0,
-                // FIXME: Change this according to your needs
                 newOwner: sender(),
                 responseDestination: sender(),
                 customPayload: null,
                 forwardAmount: 1,
-                forwardPayload: rawSlice("F"), // precomputed beginCell().storeUint(0xF, 4).endCell().beginParse()
+                forwardPayload: rawSlice("F"),
             }.toCell(),
         });
 
